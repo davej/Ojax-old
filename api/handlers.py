@@ -10,6 +10,12 @@ from datetime import timedelta
 
 from api.utils import is_same_day, parse_date
 from events.models import Event
+from projects.models import Project
+
+class ProjectHandler(BaseHandler):
+   allow_methods = ('GET',)
+   model = Project
+   fields = (('name', ('creator', ('username',)), 'created','private',))
 
 class EventListHandler(BaseHandler):
    allow_methods = ('GET',)

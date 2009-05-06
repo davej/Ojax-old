@@ -4,7 +4,7 @@ from piston.resource import Resource
 from djangogcal.observer import CalendarObserver
 
 from api.adapters import EventCalendarAdapter
-from api.handlers import EventListHandler, EventDragHandler, EventCreateHandler, EventUpdateHandler, EventDeleteHandler
+from api.handlers import EventListHandler, EventDragHandler, EventCreateHandler, EventUpdateHandler, EventDeleteHandler, ProjectHandler
 from events.models import Event
 
 event_listings = Resource(handler=EventListHandler)
@@ -13,12 +13,17 @@ event_create = Resource(handler=EventCreateHandler)
 event_update = Resource(handler=EventUpdateHandler)
 event_delete = Resource(handler=EventDeleteHandler)
 
+project_listings = Resource(handler=ProjectHandler)
+
+
 urlpatterns = patterns('',
     url(r'^events/$', event_listings),
     url(r'^events/move-event/(?P<cal_id>\d+)/$', event_move),
     url(r'^events/create/$', event_create),
     url(r'^events/update/(?P<cal_id>\d+)/$', event_update),
     url(r'^events/delete/(?P<cal_id>\d+)/$', event_delete),
+    
+    url(r'^projects/$', project_listings),
 )
 
 # gCalendar Update Signal
