@@ -1,0 +1,1 @@
+ALTER TABLE jellybaby_item ALTER object_id TYPE text;

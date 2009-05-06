@@ -1,0 +1,14 @@
+<div class="jellybaby-item">
+  <h3>
+    {% if item.url %}
+      <a href="{{ item.url }}">{{ object }}</a>
+    {% else %}
+      {{ object }}
+    {% endif %}
+    {% if object.permalink %}
+      <a href="{{ object.permalink }}">#</a>
+    {% endif %}
+  </h3>
+  <p class="meta">{{ item.timestamp|date:"N jS, Y, P" }}</p>
+  <p class="tags">{{ item.tags }}</p>
+</div>

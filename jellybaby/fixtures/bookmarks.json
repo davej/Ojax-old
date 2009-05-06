@@ -1,0 +1,10 @@
+[
+    {
+        "model" : "jellybaby.bookmark",
+        "pk" : "1",
+        "fields" : {
+            "url" : "http://example.com/", 
+            "description" : "Example"
+        }
+    }
+]

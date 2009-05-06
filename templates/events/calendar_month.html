@@ -1,0 +1,162 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Calendar" %}{% endblock %}
+{% block extra_head %}
+<style type='text/css'>
+		
+	#loading {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		background:white;
+	}
+
+	#calendar {
+/*      width: 90%;
+*/		margin: 0 auto;
+	}
+
+</style>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/fullcalendar.css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/jquery-ui.css" />
+    <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/jquery.js'></script>
+    <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/jquery-ui.js'></script>
+    
+    {# <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js" type="text/javascript"></script> #}
+    {# <script type='text/javascript' src='http://haineault.com/media/examples/jquery-utils/demo/data/ui.js'></script> #}
+    
+    
+    {# <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/jquery.utils.js'></script> #}
+    {# // <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/jquery.strings.js'></script> #}
+    {# <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/ui.dropslide.js'></script> #}
+    <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/jquery.timepickr.js'></script>
+    <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/ui.timepickr.js'></script>
+    {# // <script type='text/javascript' src='{{ MEDIA_URL }}js/jquery/ui.draggable.js'></script> #}
+    {# // <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery/ui.dialog.js"></script> #}
+    
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/fullcalendar.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/gcal.js"></script>
+    
+    <script type="text/javascript">
+	
+        $(document).ready(function() {
+            
+            function pad(number, length){
+              var str = "" + number;
+              while(str.length<length){
+                 str = '0'+str;
+              }
+               return str;
+            }
+
+            
+            
+            $('#calendar').fullCalendar({
+                 draggable: true,
+                 events: "/api/events/",
+                 eventDrop: function(event, delta) {
+                     $.post("/api/events/move-event/"+event.id+"/", { days: delta }, function(data) {
+                     } );
+                 },
+                 eventClick: function(calEvent) {
+                     $("#event-create").dialog( 'destroy' )
+                     $("#event-create").dialog({ modal: true, show: 'puff', title: 'Edit Event', width: 460, });
+                     $('.time-selector').timepickr();
+                     $(".date-selector").datepicker();
+                     $("#delete").show();
+                     $("#create").val("Edit");
+                     $("#send").click(function () {
+                         stitle = $('#title').val();
+                         sdate1 = $('#date-1').val();
+                         stime1 = $('#time-1').val();
+                         sdate2 = $('#date-2').val();
+                         stime2 = $('#time-2').val();
+                         $.post("/api/events/update/"+calEvent.id+"/", { title: stitle, date1: sdate1, time1: stime1, date2: sdate2, time2: stime2 }, function(data) {
+                               $("#event-create").dialog('destroy')
+                               $('#calendar').fullCalendar('refresh');
+                         }); 
+                     });
+                     
+                     $("#delete").click(function () {
+                          $.get("/api/events/delete/"+calEvent.id+"/", { }, function(data) {
+                                $("#event-create").dialog('destroy')
+                                $('#calendar').fullCalendar('refresh');
+                          }); 
+                      });
+                     
+                     
+                     $('#title').val(calEvent.title);
+                     $('#date-1').val((calEvent.start.getMonth()+1)+"/"+calEvent.start.getDate()+"/"+calEvent.start.getFullYear());
+                     $('#time-1').val(calEvent.start.getHours()+":"+pad(calEvent.start.getMinutes(),2));
+                     $('#date-2').val((calEvent.end.getMonth()+1)+"/"+calEvent.end.getDate()+"/"+calEvent.end.getFullYear());
+                      $('#time-2').val(calEvent.end.getHours()+":"+pad(calEvent.end.getMinutes(),2));
+                 },
+                 dayClick: function(dayDate) {
+                     $("#event-create").dialog( 'destroy' )
+                     $("#event-create").dialog({ modal: true, show: 'puff', title: 'Create Event', width: 460 });
+                     $('.time-selector').timepickr();
+                     $(".date-selector").datepicker();
+                     
+                     $("#send").click(function () { 
+                        stitle = $('#title').val();
+                        sdate1 = $('#date-1').val();
+                        stime1 = $('#time-1').val();
+                        sdate2 = $('#date-2').val();
+                        stime2 = $('#time-2').val();
+                        $.post("/api/events/create/", { title: stitle, date1: sdate1, time1: stime1, date2: sdate2, time2: stime2 }, function(data) {
+                              $("#event-create").dialog('destroy');
+                              $('#calendar').fullCalendar('refresh');
+                         });
+                      });
+                     
+                      var d = new Date();
+                     $('#title').val("");
+                     $("#date-1, #date-2").val((dayDate.getMonth()+1)+"/"+dayDate.getDate()+"/"+dayDate.getFullYear())
+                     $('#time-1').val(d.getHours()+":00");
+                     $('#time-2').val((d.getHours()+1)+":00");
+                 },
+                 loading: function(bool) {
+                     if (bool) $('#loading').show();
+                     else $('#loading').hide();
+                 }
+            });
+            
+            $("#import").click(function () { 
+                $('#calendar').html("");
+                $('#calendar').gcalFullCalendar({
+        			// US Holidays
+        			events: $('#g-import').val(),
+        			eventClick: function(event) {
+        				window.open(event.url, 'gcalevent', 'width=700,height=600');
+        				return false;
+        			},
+        			loading: function(bool) {
+        				if (bool) $('#loading').show();
+        				else $('#loading').hide();
+        			}
+        		});
+                
+            });
+    	});
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div id="loading" style="display:none">loading...</div>
+    <div id="calendar"></div>
+    <div id="event-create" style="font-size:0.8em; display:none">
+        Title: <input type="text" id="title" /><br />
+        From: <input type="text" id="date-1" class="date-selector" /><input id="time-1" type="text" value="12:00" class="time-selector" /><br />
+        To: <input type="text" id="date-2" class="date-selector" /><input id="time-2" type="text" value="13:00" class="time-selector" /><br />
+        <div style="margin:10px 0 5px">
+            <span id="send" class="cal-button">Create</span>
+            <span id="delete" style="display:none;" class="cal-button"><img src="/media/img/admin/icon_deletelink.gif" /> Delete</span>
+        </div>
+    </div>
+    
+    <input type="text" id="g-import" /><span id="import" class="cal-button">Import</span>
+    
+{% endblock %}

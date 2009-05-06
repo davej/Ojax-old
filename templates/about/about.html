@@ -1,0 +1,15 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "About" %}{% endblock %}
+
+{% block body %}
+    {% blocktrans %}
+        <p>The Ojax<sup>++</sup> Virtual Research Environment uses Web 2.0 technologies such as Ajax, Web Services and collaborative tagging to integrate a sophisticated recommendation engine combining AI technologies and ideas from case-based reasoning (CBR), user profiling and data mining research. Ojax is a component of Ojax<sup>++</sup>.</p>
+                <p><a href="http://www.jisc.ac.uk/">JISC</a> <a href="http://www.jisc.ac.uk/programme_vre.html">defines a <abbr title="Virtual Research Environment">VRE</abbr></a> as:<br />
+
+                <span class="quote">&ldquo;A set of online tools and other network resources and technologies interoperating with each other to support or enhance the processes of a wide range of research practitioners within and across disciplinary and institutional boundaries&hellip;&rdquo;</span></p>
+    {% endblocktrans %}
+
+{% endblock %}

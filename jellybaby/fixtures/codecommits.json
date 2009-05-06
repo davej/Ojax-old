@@ -1,0 +1,23 @@
+[
+    {
+        "model" : "jellybaby.coderepository",
+        "pk" : "1",
+        "fields" : {
+            "type" : "svn",
+            "name" : "Django",
+            "slug" : "django",
+            "url" : "http://code.djangoproject.com/svn/",
+            "public_changeset_template" : "http://code.djangoproject.com/changeset/%s",
+            "username" : "jacob"
+        }
+    },
+    {
+        "model" : "jellybaby.codecommit",
+        "pk" : "1",
+        "fields" : {
+            "repository" : 1,
+            "revision" : 42,
+            "message" : "Found the meaning of life."
+        }
+    }
+]
