@@ -61,13 +61,16 @@
                      } );
                  },
                  eventClick: function(calEvent) {
+                     $("#send").unbind("click");
+                     $("#delete").unbind("click");
                      $("#event-create").dialog( 'destroy' )
                      $("#event-create").dialog({ modal: true, show: 'puff', title: 'Edit Event', width: 460, });
                      $('.time-selector').timepickr();
                      $(".date-selector").datepicker();
                      $("#delete").show();
-                     $("#create").val("Edit");
-                     $("#send").click(function () {
+                     $("#send").text("Edit");
+                     
+                     $("#send").one("click", function () {
                          stitle = $('#title').val();
                          sdate1 = $('#date-1').val();
                          stime1 = $('#time-1').val();
@@ -79,7 +82,7 @@
                          }); 
                      });
                      
-                     $("#delete").click(function () {
+                     $("#delete").one("click", function () {
                           $.get("/api/events/delete/"+calEvent.id+"/", { }, function(data) {
                                 $("#event-create").dialog('destroy')
                                 $('#calendar').fullCalendar('refresh');
@@ -94,12 +97,15 @@
                       $('#time-2').val(calEvent.end.getHours()+":"+pad(calEvent.end.getMinutes(),2));
                  },
                  dayClick: function(dayDate) {
+                     $("#send").unbind("click");
+                     $("#delete").unbind("click");
                      $("#event-create").dialog( 'destroy' )
                      $("#event-create").dialog({ modal: true, show: 'puff', title: 'Create Event', width: 460 });
                      $('.time-selector').timepickr();
                      $(".date-selector").datepicker();
+                     $("#send").text("Create");
                      
-                     $("#send").click(function () { 
+                     $("#send").one("click", function () { 
                         stitle = $('#title').val();
                         sdate1 = $('#date-1').val();
                         stime1 = $('#time-1').val();
